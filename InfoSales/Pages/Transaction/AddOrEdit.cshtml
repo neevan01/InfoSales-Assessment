@@ -1,0 +1,101 @@
+﻿@page
+@model InfoSales.Pages.Transaction.AddOrEditModel
+
+@{
+    ViewData["Title"] = "Transactions";
+    ViewData["Header"] = Model.Transactions.TransactionId == 0 ? "Create a new Transaction" : "Edit Transaction";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Transactions.TransactionId" />
+            <div class="mb-3">
+                <label asp-for="Transactions.CustomerId" class="control-label"></label>
+                <select asp-for="Transactions.CustomerId" class="form-control" asp-items="ViewBag.CustomerId"></select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Transactions.ProductId" class="control-label"></label>
+                <select asp-for="Transactions.ProductId" class="form-control" asp-items="ViewBag.ProductId"></select>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Transactions.Quantity" class="control-label"></label>
+                <input asp-for="Transactions.Quantity" min="1" type="number" class="form-control" />
+                <span asp-validation-for="Transactions.Quantity" class="text-danger"></span>
+            </div>
+            <input type="hidden" asp-for="Transactions.ProductRate" />
+            <div class="mb-3">
+                <label asp-for="Transactions.TotalAmount" class="control-label"></label>
+                <input readonly asp-for="Transactions.TotalAmount" type="number" class="form-control" />
+                <span asp-validation-for="Transactions.TotalAmount" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Transactions.TransactionDate" class="control-label"></label>
+                <input asp-for="Transactions.TransactionDate" type="date" class="form-control" />
+                <span asp-validation-for="Transactions.TransactionDate" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Transactions.Status" checked="@(Model.Transactions.TransactionId != 0 ? Model.Transactions.Status : true)" /> @Html.DisplayNameFor(model => model.Transactions.Status)
+                </label>
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="@( Model.Transactions.TransactionId != 0 ? "Update": "Create")" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <div class="widget h-100 d-flex justify-content-center align-items-center">
+            <i class="fa-solid fa-shapes fa-2xl"></i>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        <script>
+            $(function () {
+                if ($("#Transactions_ProductRate").val() == 0) {
+                    fetchProductRate();
+                }
+                $("#Transactions_ProductId").on("change", function () {
+                    fetchProductRate();
+                });
+
+                $("#Transactions_Quantity").on("change keyup mouseup", function () {
+                    CalculateTotal();
+                });
+            });
+
+            function fetchProductRate() {
+                var id = $("#Transactions_ProductId").val();
+                $.ajax({
+                    url: '/Transaction/AddOrEdit?handler=RateByProduct',
+                    type: 'POST',
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("XSRF-TOKEN",
+                            $('input:hidden[name="__RequestVerificationToken"]').val());
+                    },
+                    data: { pId: id },
+                    success: function (resp) {
+                        $("#Transactions_ProductRate").val(resp.rate);
+                        CalculateTotal();
+                    },
+                    dataType: 'JSON',
+                    error: function (resp) {
+                        alert('Error: ' + resp)
+                    }
+                });
+            }
+
+            function CalculateTotal() {
+                var rate = $("#Transactions_ProductRate").val();
+                var qty = $("#Transactions_Quantity").val();
+                $("#Transactions_TotalAmount").val(rate * qty);
+            }
+        </script>
+    }
+}
+

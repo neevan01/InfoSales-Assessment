@@ -1,0 +1,46 @@
+﻿@page
+@model InfoSales.Pages.Products.AddOrEditModel
+
+@{
+    ViewData["Title"] = "Product";
+    ViewData["Header"] = Model.Product.Id == 0 ? "Create a new Product" : "Edit Product";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="Product.Id" asp-for="Product.Id" />
+            <div class="mb-3">
+                <label asp-for="Product.Title" class="control-label"></label>
+                <input asp-for="Product.Title" class="form-control" />
+                <span asp-validation-for="Product.Title" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Product.Rate" class="control-label"></label>
+                <input type="number" asp-for="Product.Rate" class="form-control" />
+                <span asp-validation-for="Product.Rate" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Product.Status" checked="@(Model.Product.Id != 0 ? Model.Product.Status : true)" /> @Html.DisplayNameFor(model => model.Product.Status)
+                </label>
+            </div>
+            <div class="mb-3">
+                <input type="submit" value="@( Model.Product.Id != 0 ? "Update": "Create")" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <div class="widget h-100 d-flex justify-content-center align-items-center">
+            <i class="fa-solid fa-shapes fa-2xl"></i>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
+

@@ -1,0 +1,164 @@
+﻿@page
+@model InfoSales.Pages.DashboardModel
+
+@{
+    ViewData["isDashboard"] = true;
+    ViewData["Title"] = "Dashboard";
+}
+<div class="mb-60">
+    @* Summary Widgets *@
+    <div class="row mb-4">
+        <div class="col-md-4">
+            <div class="d-flex flex-row widget summary customer">
+                <div class="d-flex flex-column justify-content-center p-4">
+                    <i class="fa-solid fa-users fa-2xl"></i>
+                </div>
+                <div class="d-flex flex-column m-auto py-3">
+                    <span class="lead">Total Active Customers</span>
+                    <h1 class="display-6 fw-bold">@Model.CountData.TotalCustomer</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="d-flex flex-row widget summary product">
+                <div class="d-flex flex-column justify-content-center p-4">
+                    <i class="fa fa-briefcase fa-2xl"></i>
+                </div>
+                <div class="d-flex flex-column m-auto py-3">
+                    <span class="lead">Total Active Products</span>
+                    <h1 class="display-6 fw-bold">@Model.CountData.TotalProducts</h1>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="d-flex flex-row widget summary sales">
+                <div class="d-flex flex-column justify-content-center p-4">
+                    <i class="fa-solid fa-dollar-sign fa-2xl"></i>
+                </div>
+                <div class="d-flex flex-column m-auto py-3">
+                    <span class="lead">Total Successful Sales</span>
+                    <h1 class="display-6 fw-bold">@Model.CountData.TotalSales</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @* Donut Chart and Spline Chart *@
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <div class="widget line chart">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="widget donut chart">
+                <div class="p-4">
+                    <h5 class="fw-bold text-center">Sales By Product</h5>
+                </div>
+                <canvas id="donutChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    @* Last 7 Transactions *@
+    <div class="row">
+        <div class="col-md-6">
+            <div class="widget recent">
+                <div class="p-4">
+                    <h5 class="fw-bold">Recent Transactions</h5>
+                </div>
+                <div class="px-4 pb-4">
+                    <table class="table table-striped table-hover">
+                        <thead>
+                            <tr>
+                                <th>Transaction Date</th>
+                                <th>Product</th>
+                                <th>Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model.RecentSales != null)
+                            {
+                                @foreach (var item in Model.RecentSales)
+                                {
+                                    <tr>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Date)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Title)
+                                        </td>
+                                        <td>
+                                            @Html.DisplayFor(modelItem => item.Amount)
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="widget more-widget h-100">
+                <div class="d-flex justify-content-center align-items-center h-100">
+                    <span>
+                        <i class="fa-solid fa-plus fa-2xl"></i> Widget
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+
+<script>
+    const ctx = document.getElementById('myChart');
+    var dataObj = @Html.Raw(Json.Serialize(ViewData["SalesTrend"]));
+    var dates = [];
+    var amounts = [];
+    $.each(dataObj, function (index, item) {
+        dates.push(item.date);
+        amounts.push(item.amount);
+    });
+    new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Last 10 Days Sales Trend',
+                data: amounts,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+    const ctx2 = document.getElementById('donutChart');
+
+    dataObj = @Html.Raw(Json.Serialize(ViewData["ByProduct"]));
+    dates = [];
+    amounts = [];
+    $.each(dataObj, function (index, item) {
+        dates.push(item.product);
+        amounts.push(item.amount);
+    });
+    new Chart(ctx2, {
+        type: 'doughnut',
+        data: {
+            labels: dates,
+            datasets: [{
+                label: 'Sales By Product',
+                data: amounts,
+                hoverOffset: 4
+            }]
+        }
+    });
+</script>

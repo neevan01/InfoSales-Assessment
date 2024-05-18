@@ -1,0 +1,72 @@
+﻿@page
+@model InfoSales.Pages.Customers.IndexModel
+
+@{
+    ViewData["Title"] = "Customer";
+    ViewData["Header"] = "Customers";
+    ViewData["PageActionText"] = "+ New Customer";
+    ViewData["PageActionUrl"] = "/Customers/AddOrEdit";
+}
+<form asp-page-handler="Get" method="get">
+    <p>
+        Name: <input type="text" name="SearchString" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
+<div class="row">
+    <div class="col-md-8">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th hidden>Id</th>
+                    <th>Name</th>
+                    <th>Address</th>
+                    <th>Phone</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Customer != null)
+                {
+                    foreach (var item in Model.Customer)
+                    {
+                        <tr>
+                            <td hidden>@Html.DisplayFor(modelItem => item.Id)</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Name)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Address)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Phone)
+                            </td>
+                            <td>
+                                @(item.Status ? "Active" : "Inactive")
+                            </td>
+                            <td>
+                                <div class="d-flex flex-row justify-content-center">
+                                    <a class="btn btn-sm no-a-decoration" asp-page="/Customers/AddOrEdit" asp-route-id="@item.Id">
+                                        <i class="fa-solid fa-pen fa-lg"></i>
+                                    </a>
+                                    <form asp-page-handler="DeleteCustomer" asp-route-id="@item.Id" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-link no-a-decoration" onclick="return confirm(&quot;Are you sure to delete this record?&quot;);">
+                                            <i class="fa-solid fa-trash-can fa-lg text-danger"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <div class="widget h-100 d-flex justify-content-center align-items-center">
+            <i class="fa-solid fa-shapes fa-2xl"></i>
+        </div>
+    </div>
+</div>

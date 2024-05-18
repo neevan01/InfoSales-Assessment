@@ -1,0 +1,52 @@
+﻿@page
+@model InfoSales.Pages.Customers.AddOrEditModel
+
+@{
+    ViewData["Title"] = "Customer";
+    // if customer is not loaded, create mode elseedit mode
+    ViewData["Header"] = Model.Customer.Id == 0 ? "Create a new Customer" : "Edit Customer";
+}
+
+<div class="row">
+    <div class="col-md-8">
+        <form method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="Customer.Id" asp-for="Customer.Id" />
+            <div class="mb-3">
+                <label asp-for="Customer.Name" class="control-label"></label>
+                <input asp-for="Customer.Name" class="form-control" />
+                <span asp-validation-for="Customer.Name" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Customer.Address" class="control-label"></label>
+                <input asp-for="Customer.Address" class="form-control" />
+                <span asp-validation-for="Customer.Address" class="text-danger"></span>
+            </div>
+            <div class="mb-3">
+                <label asp-for="Customer.Phone" class="control-label"></label>
+                <input asp-for="Customer.Phone" class="form-control" />
+                <span asp-validation-for="Customer.Phone" class="text-danger"></span>
+            </div>
+            <div class="mb-3 form-check">
+                <label class="form-check-label">
+                    <input class="form-check-input" asp-for="Customer.Status" checked="@(Model.Customer.Id != 0 ? Model.Customer.Status : true)" /> @Html.DisplayNameFor(model => model.Customer.Status)
+                </label>
+            </div>
+            <div class="mb-3">
+                @* Display the button text as their create or edit mode *@
+                <input type="submit" value="@( Model.Customer.Id != 0 ? "Update": "Create")" class="btn btn-success" />
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4">
+        <div class="widget h-100 d-flex justify-content-center align-items-center">
+            <i class="fa-solid fa-shapes fa-2xl"></i>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

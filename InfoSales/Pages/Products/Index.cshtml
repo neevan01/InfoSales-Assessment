@@ -1,0 +1,69 @@
+﻿@page
+@model InfoSales.Pages.Products.IndexModel
+
+@{
+    ViewData["Title"] = "Product";
+    ViewData["Header"] = "Products";
+    ViewData["PageActionText"] = "+ New Product";
+    ViewData["PageActionUrl"] = "/Products/AddOrEdit";
+}
+<form asp-page-handler="Get" method="get">
+    <p>
+        Title: <input type="text" name="SearchString" />
+        <input type="submit" value="Search" />
+    </p>
+</form>
+<div class="row">
+    <div class="col-md-8">
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th hidden>Id</th>
+                    <th>Title</th>
+                    <th>Rate</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.Products != null)
+                {
+                    foreach (var item in Model.Products)
+                    {
+                        <tr>
+                            <td hidden>@Html.DisplayFor(modelItem => item.Id)</td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Title)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.Rate)
+                            </td>
+                            <td>
+                                @(item.Status ? "Active" : "Inactive")
+                            </td>
+                            <td>
+                                <div class="d-flex flex-row justify-content-center">
+                                    <a class="btn btn-sm no-a-decoration" asp-page="/Products/AddOrEdit" asp-route-id="@item.Id">
+                                        <i class="fa-solid fa-pen fa-lg"></i>
+                                    </a>
+                                    <form asp-page-handler="DeleteProduct" asp-route-id="@item.Id" method="post">
+                                        @Html.AntiForgeryToken()
+                                        <button type="submit" class="btn btn-sm btn-link no-a-decoration" onclick="return confirm(&quot;Are you sure to delete this record?&quot;);">
+                                            <i class="fa-solid fa-trash-can fa-lg text-danger"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="col-md-4">
+        <div class="widget h-100 d-flex justify-content-center align-items-center">
+            <i class="fa-solid fa-shapes fa-2xl"></i>
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,97 @@
+html {
+    font-size: 14px;
+}
+
+@media (min-width: 768px) {
+    html {
+        font-size: 16px;
+    }
+}
+
+html {
+    position: relative;
+    min-height: 100%;
+}
+
+.dark-body {
+    margin-bottom: 60px;
+    background-color: #12161d;
+    color: white;
+    overflow: hidden;
+}
+
+/*Widget*/
+.widget {
+    border-radius: 1rem;
+    color: white !important;
+    background-color: #1a222b;
+}
+
+    .widget.more-widget {
+        background-color: lightcoral;
+    }
+
+    .widget.line {
+        background-color: antiquewhite;
+    }
+
+    .widget.donut {
+        background-color: bisque;
+    }
+
+    .widget.recent {
+        background-color: azure;
+        color:black !important;
+    }
+
+    .widget.summary > div:first-child {
+        background-color: #222b33;
+        padding: 1rem;
+        border-top-left-radius: 1rem;
+        border-bottom-left-radius: 1rem;
+    }
+
+        .widget.summary > div:first-child i {
+            font-weight: bold;
+        }
+
+    .widget.customer > div:first-child {
+        color: #65da41;
+    }
+
+    .widget.product > div:first-child {
+        color: #ff4e48;
+    }
+
+    .widget.sales > div:first-child {
+        color: #2aa1ff;
+    }
+
+    .widget.chart {
+        padding: 5px;
+        height: 100%;
+    }
+
+/*Profile Pic*/
+img.profile-pic {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+}
+
+.no-layout-footer {
+    position: absolute;
+    bottom: 0;
+    line-height: 60px;
+    width: 100%
+}
+
+.all-border {
+    border: 1px solid green;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+.mb-60 {
+    margin-bottom: 60px;
+}
